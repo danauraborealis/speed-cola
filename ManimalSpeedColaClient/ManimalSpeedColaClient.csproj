@@ -1,0 +1,164 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <RootNamespace>Manimal.SpeedCola</RootNamespace>
+    <AssemblyName>ManimalSpeedColaClient</AssemblyName>
+    <Nullable>disable</Nullable>
+    <Configurations>Debug;Release</Configurations>
+    <LangVersion>latest</LangVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <!-- Authors / Version / AssemblyVersion / FileVersion inherited from ../Directory.Build.props -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WTT-ClientCommonLib" Version="2.0.20" />
+    <PackageReference Include="WTT-ServerCommonLib" Version="2.0.20" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- glob every PNG under Assets so new perk icons ship automatically.
+         keep one Content entry per glob match for PreserveNewest behavior. -->
+    <Content Include="Assets\*.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <!--
+    hint paths point at the local SPTDev install. if you move SPTDev, retarget
+    these in one place. SpecificVersion=False on the pinned-version refs lets
+    the build tolerate minor BSG bumps without requiring a csproj edit.
+  -->
+  <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>D:\SPTDev\BepInEx\core\0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="AnimationSystem.Types">
+      <HintPath>D:\SPTDev\EscapeFromTarkov_Data\Managed\AnimationSystem.Types.dll</HintPath>
+    </Reference>
+    <Reference Include="BepInEx">
+      <HintPath>D:\SPTDev\BepInEx\core\BepInEx.dll</HintPath>
+    </Reference>
+    <Reference Include="spt-common">
+      <HintPath>D:\SPTDev\BepInEx\plugins\spt\spt-common.dll</HintPath>
+    </Reference>
+    <Reference Include="spt-reflection">
+      <HintPath>D:\SPTDev\BepInEx\plugins\spt\spt-reflection.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>D:\SPTDev\EscapeFromTarkov_Data\Managed\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Comfort">
+      <HintPath>D:\SPTDev\EscapeFromTarkov_Data\Managed\Comfort.dll</HintPath>
+    </Reference>
+    <Reference Include="DissonanceVoip">
+      <HintPath>D:\SPTDev\EscapeFromTarkov_Data\Managed\DissonanceVoip.dll</HintPath>
+    </Reference>
+    <Reference Include="Comfort.Unity">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\SPTDev\EscapeFromTarkov_Data\Managed\Comfort.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="ItemComponent.Types">
+      <HintPath>D:\SPTDev\EscapeFromTarkov_Data\Managed\ItemComponent.Types.dll</HintPath>
+    </Reference>
+    <Reference Include="ItemTemplate.Types">
+      <HintPath>D:\SPTDev\EscapeFromTarkov_Data\Managed\ItemTemplate.Types.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\SPTDev\EscapeFromTarkov_Data\Managed\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Sirenix.Serialization">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\SPTDev\EscapeFromTarkov_Data\Managed\Sirenix.Serialization.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\SPTDev\EscapeFromTarkov_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>D:\SPTDev\EscapeFromTarkov_Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AssetBundleModule">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\SPTDev\EscapeFromTarkov_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AudioModule">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\SPTDev\EscapeFromTarkov_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AnimationModule">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\SPTDev\EscapeFromTarkov_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>D:\SPTDev\EscapeFromTarkov_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\SPTDev\EscapeFromTarkov_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\SPTDev\EscapeFromTarkov_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>D:\SPTDev\EscapeFromTarkov_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ParticleSystemModule">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\SPTDev\EscapeFromTarkov_Data\Managed\UnityEngine.ParticleSystemModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\SPTDev\EscapeFromTarkov_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\SPTDev\EscapeFromTarkov_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\SPTDev\EscapeFromTarkov_Data\Managed\UnityEngine.UI.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <!-- dev-time deploy: copy DLL + every Assets PNG into the local SPTDev BepInEx plugins folder -->
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <ItemGroup>
+      <DeployIcons Include="$(ProjectDir)Assets\*.png" />
+    </ItemGroup>
+    <MakeDir Directories="D:\SPTDev\BepInEx\plugins\$(ModServerName)" />
+    <MakeDir Directories="D:\SPTDev\BepInEx\plugins\$(ModServerName)\Assets" />
+    <Exec Command="copy &quot;$(TargetPath)&quot; &quot;D:\SPTDev\BepInEx\plugins\$(ModServerName)\$(TargetFileName)&quot;" />
+    <Copy SourceFiles="@(DeployIcons)" DestinationFolder="D:\SPTDev\BepInEx\plugins\$(ModServerName)\Assets" />
+  </Target>
+
+  <!--
+    standalone client zip (BepInEx plugin layout). the combined client+server
+    zip is built by the server csproj's PackageCombined target after both
+    projects compile.
+  -->
+  <Target Name="PackageModForDistribution" AfterTargets="Build">
+    <PropertyGroup>
+      <ModName>$(AssemblyName)</ModName>
+      <ZipFileName>$(ModName)-$(ModVersion).zip</ZipFileName>
+      <TempPackageDir>$(ProjectDir)obj\Package</TempPackageDir>
+      <ModPackageDir>$(TempPackageDir)\BepInEx\plugins\$(ModServerName)</ModPackageDir>
+    </PropertyGroup>
+    <ItemGroup>
+      <PackageIcons Include="$(ProjectDir)Assets\*.png" />
+    </ItemGroup>
+    <Message Text="--- Starting Mod packaging for distribution ---" Importance="high" />
+    <RemoveDir Directories="$(TempPackageDir)" />
+    <MakeDir Directories="$(ModPackageDir)" />
+    <MakeDir Directories="$(ModPackageDir)\Assets" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ModPackageDir)" />
+    <Copy SourceFiles="@(PackageIcons)" DestinationFolder="$(ModPackageDir)\Assets" />
+    <ZipDirectory SourceDirectory="$(TempPackageDir)" DestinationFile="$(ProjectDir)$(ZipFileName)" Overwrite="true" />
+    <RemoveDir Directories="$(TempPackageDir)" />
+    <Message Text="--- Mod successfully packaged at: $(ProjectDir)$(ZipFileName) ---" Importance="high" />
+  </Target>
+
+</Project>

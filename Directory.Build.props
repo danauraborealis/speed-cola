@@ -1,0 +1,34 @@
+<Project>
+
+  <!--
+    single source of truth for all mod metadata.
+    updating ModVersion here propagates to:
+      - csproj <Version> / <AssemblyVersion> / <FileVersion>
+      - generated ModInfo.cs (used by [BepInPlugin] + AbstractModMetadata)
+      - the zip artifact filenames (via Version interpolation)
+
+    forge naming rules (SPT mod docs section 2.2):
+      ModForgeName: client BepInPlugin Name + Forge upload, "Username-ModName"
+                    only letters/numbers/single-dash allowed
+      ModServerName: AbstractModMetadata.Name on the server, letters and numbers only
+      ModGuid: must match across client + server + Forge upload, "com.username.modname"
+  -->
+  <PropertyGroup>
+    <ModVersion>1.0.0</ModVersion>
+    <ModSptVersion>~4.0.13</ModSptVersion>
+    <ModGuid>com.manimal.speedcola</ModGuid>
+    <ModAuthor>Manimal</ModAuthor>
+    <ModForgeName>Manimal-SpeedCola</ModForgeName>
+    <ModServerName>ManimalSpeedCola</ModServerName>
+  </PropertyGroup>
+
+  <!-- propagate ModVersion into the assembly version properties so end users see
+       the right version on the dll, in launcher mod lists, etc. -->
+  <PropertyGroup>
+    <Version>$(ModVersion)</Version>
+    <AssemblyVersion>$(ModVersion)</AssemblyVersion>
+    <FileVersion>$(ModVersion)</FileVersion>
+    <Authors>$(ModAuthor)</Authors>
+  </PropertyGroup>
+
+</Project>

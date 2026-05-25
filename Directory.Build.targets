@@ -1,0 +1,36 @@
+<Project>
+
+  <!--
+    generate Generated/ModInfo.cs from the mod metadata properties in Directory.Build.props.
+    runs before each compile so the consts always match the props. the file is written into
+    the project's intermediate dir (obj/) and added to the compile set; the source tree
+    stays clean.
+  -->
+  <Target Name="GenerateModInfo" BeforeTargets="BeforeCompile;CoreCompile">
+    <PropertyGroup>
+      <ModInfoFile>$(IntermediateOutputPath)ModInfo.g.cs</ModInfoFile>
+    </PropertyGroup>
+    <ItemGroup>
+      <ModInfoLine Include="// auto-generated from Directory.Build.props - do not edit" />
+      <ModInfoLine Include="namespace Manimal.SpeedCola" />
+      <ModInfoLine Include="{" />
+      <ModInfoLine Include="    internal static class ModInfo" />
+      <ModInfoLine Include="    {" />
+      <ModInfoLine Include="        public const string Guid = &quot;$(ModGuid)&quot;%3B" />
+      <ModInfoLine Include="        public const string Author = &quot;$(ModAuthor)&quot;%3B" />
+      <ModInfoLine Include="        public const string ForgeName = &quot;$(ModForgeName)&quot;%3B" />
+      <ModInfoLine Include="        public const string ServerName = &quot;$(ModServerName)&quot;%3B" />
+      <ModInfoLine Include="        public const string Version = &quot;$(ModVersion)&quot;%3B" />
+      <ModInfoLine Include="        public const string SptVersion = &quot;$(ModSptVersion)&quot;%3B" />
+      <ModInfoLine Include="    }" />
+      <ModInfoLine Include="}" />
+    </ItemGroup>
+    <MakeDir Directories="$(IntermediateOutputPath)" />
+    <WriteLinesToFile File="$(ModInfoFile)" Lines="@(ModInfoLine)" Overwrite="true" WriteOnlyWhenDifferent="true" />
+    <ItemGroup>
+      <Compile Include="$(ModInfoFile)" />
+      <FileWrites Include="$(ModInfoFile)" />
+    </ItemGroup>
+  </Target>
+
+</Project>

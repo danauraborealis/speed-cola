@@ -1,0 +1,46 @@
+{
+    "8d2a5f0e3c4b6d9a7e1f2058": {
+        "itemTplToClone": "5d1b376e86f774252519444e",
+        "parentId": "5448e8d64bdc2dce718b4568",
+        "handbookParentId": "5b47574386f77428ca22b335",
+        "overrideProperties": {
+            "ExaminedByDefault": true,
+			"Prefab": {
+                "path": "manimal/juggernog_loot.bundle",
+                "rcid": ""
+            },
+            "UsePrefab": {
+                "path": "manimal/juggernog_container.bundle",
+                "rcid": ""
+            },
+            "QuestItem": false,
+            "CanSellOnRagfair": true,
+            "BackgroundColor": "red",
+            "effects_health": {},
+            "effects_damage": {},
+            "StimulatorBuffs": "juggernog",
+            "foodUseTime": 1
+        },
+        "locales": {
+            "en": {
+                "name": "Juggernog",
+                "shortName": "Juggernog",
+                "description": "A can of Juggernog from the perk machine. Drink it for +150 max HP, 5 HP/sec regen, 10% damage reduction, and painkiller for the rest of the raid."
+            }
+        },
+        "addtoInventorySlots": [],
+        "addtoModSlots": false,
+        "modSlot": [],
+        "fleaPriceRoubles": 5000,
+        "handbookPriceRoubles": 5000,
+        "addtoBots": false,
+        "addtoItemBlacklist": true,
+        "addtoStaticLootContainers": false,
+        "staticLootContainers": [],
+        "addLooseLoot": false,
+        "addLooseLootProbability": 0,
+        "addtoHallOfFame": false,
+        "hallOfFameSlots": [],
+        "addtoTraders": false
+    }
+}

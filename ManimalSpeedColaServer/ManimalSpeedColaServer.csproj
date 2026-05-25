@@ -1,0 +1,105 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <OutputType>Library</OutputType>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <RootNamespace>ManimalSpeedColaMod</RootNamespace>
+    <AssemblyName>ManimalSpeedColaServer</AssemblyName>
+    <Company>$(ModAuthor)</Company>
+    <Product>$(ModServerName)</Product>
+    <Description>Server-side mod for ManimalSpeedCola</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <!-- Authors / Version / AssemblyVersion / FileVersion inherited from ../Directory.Build.props -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Lib.Harmony" Version="2.3.6" />
+    <PackageReference Include="SPTarkov.Common" Version="4.0.13" />
+    <PackageReference Include="SPTarkov.DI" Version="4.0.13" />
+    <PackageReference Include="SPTarkov.Server.Core" Version="4.0.13" />
+    <PackageReference Include="WTT-ServerCommonLib" Version="2.0.20" />
+  </ItemGroup>
+
+  <!-- copy DLL and all static mod files to the SPT dev install -->
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <PropertyGroup>
+      <DeployDir>D:\SPTDev\SPT\user\mods\$(AssemblyName)</DeployDir>
+      <ServerModFilesDir>$(ProjectDir)..\ServerModFiles</ServerModFilesDir>
+    </PropertyGroup>
+    <MakeDir Directories="$(DeployDir)" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(DeployDir)" />
+    <ItemGroup>
+      <StaticModFiles Include="$(ServerModFilesDir)\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(StaticModFiles)"
+          DestinationFiles="@(StaticModFiles->'$(DeployDir)\%(RecursiveDir)%(Filename)%(Extension)')" />
+  </Target>
+
+  <Target Name="PackageModForDistribution" AfterTargets="Build">
+    <PropertyGroup>
+      <ModName>$(AssemblyName)</ModName>
+      <ZipFileName>$(ModName)-$(ModVersion).zip</ZipFileName>
+      <TempPackageDir>$(ProjectDir)obj\Package</TempPackageDir>
+      <ModPackageDir>$(TempPackageDir)\SPT\user\mods\$(ModName)</ModPackageDir>
+      <ServerModFilesDir>$(ProjectDir)..\ServerModFiles</ServerModFilesDir>
+    </PropertyGroup>
+    <Message Text="--- Starting Mod packaging for distribution ---" Importance="high" />
+    <RemoveDir Directories="$(TempPackageDir)" />
+    <MakeDir Directories="$(ModPackageDir)" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ModPackageDir)" />
+    <ItemGroup>
+      <StaticModFilesForZip Include="$(ServerModFilesDir)\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(StaticModFilesForZip)"
+          DestinationFiles="@(StaticModFilesForZip->'$(ModPackageDir)\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <ZipDirectory SourceDirectory="$(TempPackageDir)" DestinationFile="$(ProjectDir)$(ZipFileName)" Overwrite="true" />
+    <RemoveDir Directories="$(TempPackageDir)" />
+    <Message Text="--- Mod successfully packaged at: $(ProjectDir)$(ZipFileName) ---" Importance="high" />
+  </Target>
+
+  <!--
+    builds the client csproj (no-op if already up to date), then assembles a single zip
+    at the solution root containing both compiled dlls and ServerModFiles, laid out so
+    end users can extract on top of their SPT install root.
+  -->
+  <Target Name="PackageCombined" AfterTargets="PackageModForDistribution">
+    <PropertyGroup>
+      <SolutionDir>$(ProjectDir)..\</SolutionDir>
+      <ClientProject>$(SolutionDir)ManimalSpeedColaClient\ManimalSpeedColaClient.csproj</ClientProject>
+      <CombinedZipPath>$(SolutionDir)$(ModForgeName)-$(ModVersion).zip</CombinedZipPath>
+      <CombinedTempDir>$(ProjectDir)obj\CombinedPackage</CombinedTempDir>
+      <CombinedClientDir>$(CombinedTempDir)\BepInEx\plugins\$(ModServerName)</CombinedClientDir>
+      <CombinedServerDir>$(CombinedTempDir)\SPT\user\mods\$(AssemblyName)</CombinedServerDir>
+      <ServerModFilesDir>$(SolutionDir)ServerModFiles</ServerModFilesDir>
+    </PropertyGroup>
+
+    <Message Text="--- Building combined client+server package ---" Importance="high" />
+
+    <!-- ensure client dll is fresh; capture its output path so we dont have to hardcode netstandard2.1 -->
+    <MSBuild Projects="$(ClientProject)"
+             Targets="Build"
+             Properties="Configuration=$(Configuration)">
+      <Output TaskParameter="TargetOutputs" ItemName="ClientBuildOutput" />
+    </MSBuild>
+
+    <RemoveDir Directories="$(CombinedTempDir)" />
+    <MakeDir Directories="$(CombinedClientDir);$(CombinedServerDir)" />
+
+    <Copy SourceFiles="@(ClientBuildOutput)" DestinationFolder="$(CombinedClientDir)" />
+    <MakeDir Directories="$(CombinedClientDir)\Assets" />
+    <Copy SourceFiles="$(SolutionDir)ManimalSpeedColaClient\Assets\speedcola_icon.png" DestinationFolder="$(CombinedClientDir)\Assets" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(CombinedServerDir)" />
+
+    <ItemGroup>
+      <CombinedStaticFiles Include="$(ServerModFilesDir)\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(CombinedStaticFiles)"
+          DestinationFiles="@(CombinedStaticFiles->'$(CombinedServerDir)\%(RecursiveDir)%(Filename)%(Extension)')" />
+
+    <ZipDirectory SourceDirectory="$(CombinedTempDir)" DestinationFile="$(CombinedZipPath)" Overwrite="true" />
+    <RemoveDir Directories="$(CombinedTempDir)" />
+
+    <Message Text="--- Combined package: $(CombinedZipPath) ---" Importance="high" />
+  </Target>
+</Project>

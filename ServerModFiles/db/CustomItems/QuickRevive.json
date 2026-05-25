@@ -1,0 +1,46 @@
+{
+    "5e9f0b1c4d2a3f8e6d1c4b2a": {
+        "itemTplToClone": "5d1b376e86f774252519444e",
+        "parentId": "5448e8d64bdc2dce718b4568",
+        "handbookParentId": "5b47574386f77428ca22b335",
+        "overrideProperties": {
+            "ExaminedByDefault": true,
+			"Prefab": {
+                "path": "manimal/revive_loot.bundle",
+                "rcid": ""
+            },
+            "UsePrefab": {
+                "path": "manimal/revive_container.bundle",
+                "rcid": ""
+            },
+            "QuestItem": false,
+            "CanSellOnRagfair": true,
+            "BackgroundColor": "green",
+            "effects_health": {},
+            "effects_damage": {},
+            "StimulatorBuffs": "quickrevive",
+            "foodUseTime": 1
+        },
+        "locales": {
+            "en": {
+                "name": "Quick Revive",
+                "shortName": "Quick Revive",
+                "description": "A can of Quick Revive from the perk machine. Drink it to gain one auto-revive: the next fatal hit restores you to full HP and burns the charge."
+            }
+        },
+        "addtoInventorySlots": [],
+        "addtoModSlots": false,
+        "modSlot": [],
+        "fleaPriceRoubles": 5000,
+        "handbookPriceRoubles": 5000,
+        "addtoBots": false,
+        "addtoItemBlacklist": true,
+        "addtoStaticLootContainers": false,
+        "staticLootContainers": [],
+        "addLooseLoot": false,
+        "addLooseLootProbability": 0,
+        "addtoHallOfFame": false,
+        "hallOfFameSlots": [],
+        "addtoTraders": false
+    }
+}

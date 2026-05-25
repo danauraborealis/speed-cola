@@ -1,0 +1,13 @@
+{
+  "juggernog": [
+    {
+      "BuffType": "HealthRate",
+      "Chance": 1,
+      "Delay": 0,
+      "Duration": 999999,
+      "Value": 3.5,
+      "AbsoluteValue": true,
+      "SkillName": ""
+    }
+  ]
+}

@@ -1,0 +1,188 @@
+{
+  "manifest": [
+    {
+      "key": "manimal/barwallbuy.bundle",
+      "dependencyKeys": [
+        "shaders"
+      ]
+    },
+    {
+      "key": "manimal/beautysong.bundle",
+      "dependencyKeys": []
+    },
+    {
+      "key": "manimal/death_perception_container.bundle",
+      "dependencyKeys": [
+        "manimal/death_perception_loot.bundle",
+        "assets/content/weapons/weapon_root_anim_fix.bundle",
+        "assets/content/weapons/additional_hands/client_assets.bundle",
+        "manimal/juggernog_loot.bundle",
+        "assets/content/weapons/usable_items/item_drink_beer/client_assets.bundle"
+      ]
+    },
+    {
+      "key": "manimal/death_perception_loot.bundle",
+      "dependencyKeys": [
+        "assets/content/weapons/usable_items/item_drink_beer/client_assets.bundle"
+      ]
+    },
+    {
+      "key": "manimal/death_perception_zombies_mat.bundle",
+      "dependencyKeys": []
+    },
+    {
+      "key": "manimal/deathperception.bundle",
+      "dependencyKeys": [
+        "shaders"
+      ]
+    },
+    {
+      "key": "manimal/juggernog_container.bundle",
+      "dependencyKeys": [
+        "assets/content/weapons/weapon_root_anim_fix.bundle",
+        "assets/content/weapons/additional_hands/client_assets.bundle",
+        "manimal/juggernog_loot.bundle",
+        "assets/content/weapons/usable_items/item_drink_beer/client_assets.bundle"
+      ]
+    },
+    {
+      "key": "manimal/juggernog_loot.bundle",
+      "dependencyKeys": [
+        "assets/content/weapons/usable_items/item_drink_beer/client_assets.bundle"
+      ]
+    },
+    {
+      "key": "manimal/juggernog_machine.bundle",
+      "dependencyKeys": [
+        "shaders"
+      ]
+    },
+    {
+      "key": "manimal/max_ammo_pickup.bundle",
+      "dependencyKeys": []
+    },
+    {
+      "key": "manimal/million.bundle",
+      "dependencyKeys": []
+    },
+    {
+      "key": "manimal/mp43wallbuy.bundle",
+      "dependencyKeys": [
+        "shaders"
+      ]
+    },
+    {
+      "key": "manimal/nadewallbuy.bundle",
+      "dependencyKeys": [
+        "shaders"
+      ]
+    },
+    {
+      "key": "manimal/quickrevive_machine.bundle",
+      "dependencyKeys": [
+        "shaders"
+      ]
+    },
+    {
+      "key": "manimal/revive_container.bundle",
+      "dependencyKeys": [
+        "manimal/revive_loot.bundle",
+        "assets/content/weapons/weapon_root_anim_fix.bundle",
+        "assets/content/weapons/additional_hands/client_assets.bundle",
+        "manimal/juggernog_loot.bundle",
+        "assets/content/weapons/usable_items/item_drink_beer/client_assets.bundle"
+      ]
+    },
+    {
+      "key": "manimal/revive_loot.bundle",
+      "dependencyKeys": [
+        "assets/content/weapons/usable_items/item_drink_beer/client_assets.bundle"
+      ]
+    },
+    {
+      "key": "manimal/rotwallbuy.bundle",
+      "dependencyKeys": [
+        "shaders"
+      ]
+    },
+    {
+      "key": "manimal/roundend.bundle",
+      "dependencyKeys": []
+    },
+    {
+      "key": "manimal/roundstart.bundle",
+      "dependencyKeys": []
+    },
+    {
+      "key": "manimal/skswallbuy.bundle",
+      "dependencyKeys": [
+        "shaders"
+      ]
+    },
+    {
+      "key": "manimal/speed_cola_container.bundle",
+      "dependencyKeys": [
+        "assets/content/weapons/weapon_root_anim_fix.bundle",
+        "manimal/speed_cola_loot.bundle",
+        "assets/content/weapons/additional_hands/client_assets.bundle",
+        "assets/content/weapons/usable_items/item_drink_beer/client_assets.bundle"
+      ]
+    },
+    {
+      "key": "manimal/speed_cola_loot.bundle",
+      "dependencyKeys": [
+        "assets/content/weapons/usable_items/item_drink_beer/client_assets.bundle"
+      ]
+    },
+    {
+      "key": "manimal/speedcola_machine.bundle",
+      "dependencyKeys": [
+        "shaders",
+        "assets/commonassets/physics/physicsmaterials.bundle"
+      ]
+    },
+    {
+      "key": "manimal/staminup_container.bundle",
+      "dependencyKeys": [
+        "manimal/staminup_loot.bundle",
+        "assets/content/weapons/weapon_root_anim_fix.bundle",
+        "assets/content/weapons/additional_hands/client_assets.bundle",
+        "assets/content/weapons/usable_items/item_drink_beer/client_assets.bundle"
+      ]
+    },
+    {
+      "key": "manimal/staminup_loot.bundle",
+      "dependencyKeys": [
+        "assets/content/weapons/usable_items/item_drink_beer/client_assets.bundle"
+      ]
+    },
+    {
+      "key": "manimal/staminup_machine.bundle",
+      "dependencyKeys": [
+        "shaders"
+      ]
+    },
+    {
+      "key": "manimal/stgwallbuy.bundle",
+      "dependencyKeys": [
+        "shaders"
+      ]
+    },
+    {
+      "key": "manimal/tarcoin.bundle",
+      "dependencyKeys": [
+        "shaders"
+      ]
+    },
+    {
+      "key": "manimal/theone_song.bundle",
+      "dependencyKeys": []
+    },
+    {
+      "key": "manimal/umpwallbuy.bundle",
+      "dependencyKeys": [
+        "shaders"
+      ]
+    }
+  ]
+}

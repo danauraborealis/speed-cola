@@ -1,0 +1,13 @@
+{
+  "deathperception": [
+    {
+      "BuffType": "StaminaRate",
+      "Chance": 1,
+      "Delay": 0,
+      "Duration": 999999,
+      "Value": 0,
+      "AbsoluteValue": true,
+      "SkillName": ""
+    }
+  ]
+}

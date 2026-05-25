@@ -1,0 +1,58 @@
+{
+  "staminup": [
+    {
+      "BuffType": "SkillRate",
+      "Chance": 1,
+      "Delay": 0,
+      "Duration": 999999,
+      "Value": 6,
+      "AbsoluteValue": true,
+      "SkillName": "Endurance"
+    },
+    {
+      "BuffType": "SkillRate",
+      "Chance": 1,
+      "Delay": 0,
+      "Duration": 999999,
+      "Value": 14,
+      "AbsoluteValue": true,
+      "SkillName": "Strength"
+    },
+    {
+      "BuffType": "SkillRate",
+      "Chance": 1,
+      "Delay": 0,
+      "Duration": 999999,
+      "Value": 5,
+      "AbsoluteValue": true,
+      "SkillName": "Attention"
+    },
+    {
+      "BuffType": "SkillRate",
+      "Chance": 1,
+      "Delay": 0,
+      "Duration": 999999,
+      "Value": 1,
+      "AbsoluteValue": true,
+      "SkillName": "StressResistance"
+    },
+    {
+      "BuffType": "MaxStamina",
+      "Chance": 1,
+      "Delay": 0,
+      "Duration": 999999,
+      "Value": 6,
+      "AbsoluteValue": true,
+      "SkillName": ""
+    },
+    {
+      "BuffType": "StaminaRate",
+      "Chance": 1,
+      "Delay": 0,
+      "Duration": 999999,
+      "Value": 2,
+      "AbsoluteValue": true,
+      "SkillName": ""
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+    "6a0b45f6682ea02b4ca45907": {
+      "itemTplToClone": "5d235b4d86f7742e017bc88a",
+      "parentId": "543be5dd4bdc2deb348b4569",
+      "handbookParentId": "5b47574386f77428ca22b2f1",
+      "overrideProperties": {
+          "COMMENT_TEXT": "This can override properties from the _props variable from the items itemTplToClone",
+          "ExaminedByDefault": false,
+		  "CanSellOnRagfair": false,
+          "Prefab": {
+              "path": "manimal/tarcoin.bundle",
+              "rcid": ""
+          },
+          "Foldable": false,
+          "Weight": 0.00001,
+          "Height": 1,
+          "Width": 1,
+          "RarityPvE": "Superrare",
+		  "StackMaxSize": 2147483647,
+          "BackgroundColor": "violet"
+      },
+      "locales": {
+            "en": {
+                "name": "TarCoin",
+                "shortName": "TarCoin",
+                "description": "A mysterious currency that appeared in Tarkov after the Contract Wars had already begun. The motto stamped on the coin refers to a certain well-known company... A rare item, prized by everyone without exception."
+            }
+        },
+      "addtoItemBlacklist": true,
+      "addtoInventorySlots": [],
+      "addtoModSlots": false,
+      "modSlot": [],
+      "fleaPriceRoubles": 13800,
+      "handbookPriceRoubles": 13800,
+      "addtoBots": false,
+      "addtoStaticLootContainers": false,
+      "staticLootContainers": [
+        { "containerName": "LOOTCONTAINER_SAFE",                "probability": 2050 },
+        { "containerName": "LOOTCONTAINER_DUFFLE_BAG",          "probability": 1084 },
+        { "containerName": "LOOTCONTAINER_COMMON_FUND_STASH",   "probability": 433  },
+        { "containerName": "LOOTCONTAINER_PLASTIC_SUITCASE",    "probability": 395  },
+        { "containerName": "LOOTCONTAINER_DEAD_SCAV",           "probability": 376  },
+        { "containerName": "LOOTCONTAINER_BURIED_BARREL_CACHE", "probability": 350  },
+        { "containerName": "LOOTCONTAINER_GROUND_CACHE",        "probability": 307  },
+        { "containerName": "LOOTCONTAINER_DEAD_SCAV_4X4_2",     "probability": 108  },
+        { "containerName": "LOOTCONTAINER_DUFFLE_BAG_ADV",      "probability": 21   }
+      ],
+      "addLooseLoot": true,
+      "addLooseLootprobability": 900,
+      "addtoHallOfFame": true,
+      "hallOfFameSlots": [
+        "smallTrophies"
+      ],
+      "addtoStatuetteSlots": true
+    }
+}

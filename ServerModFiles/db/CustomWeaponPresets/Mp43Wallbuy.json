@@ -1,0 +1,33 @@
+{
+  "7c2a4e9d2f5b3c8a6d0e9f99": {
+    "_id": "7c2a4e9d2f5b3c8a6d0e9f99",
+    "_name": "MP-43 Wallbuy Preset",
+    "_parent": "685944201e5cd8e7670bc024",
+    "_type": "Preset",
+    "_changeWeaponName": false,
+    "_encyclopedia": "5580223e4bdc2d1c128b457f",
+    "_items": [
+      {
+        "_id": "685944201e5cd8e7670bc024",
+        "_tpl": "5580223e4bdc2d1c128b457f",
+        "upd": {
+          "FireMode": {
+            "FireMode": "single"
+          }
+        }
+      },
+      {
+        "_id": "685944201e5cd8e7670bc025",
+        "_tpl": "55d447bb4bdc2d892f8b456f",
+        "parentId": "685944201e5cd8e7670bc024",
+        "slotId": "mod_barrel"
+      },
+      {
+        "_id": "685944201e5cd8e7670bc026",
+        "_tpl": "611a31ce5b7ffe001b4649d1",
+        "parentId": "685944201e5cd8e7670bc024",
+        "slotId": "mod_stock"
+      }
+    ]
+  }
+}
