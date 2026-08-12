@@ -51,6 +51,12 @@ namespace Manimal.SpeedCola
         // the "doubletap" stimulator buff for +20% fire rate and 1.5x damage.
         public const string DoubleTapItemTpl = "ab4c7e2f5d6b8a3e9f1c5d05";
 
+        // tpl of the Bandolier Bandit item (CustomItems/BandolierBandit.json).
+        // supply-drop exclusive, no machine. drives the "bandolierbandit"
+        // stimulator buff for +10 mag capacity, 5% per-shot bullet refund,
+        // and zero malfunctions on the held weapon.
+        public const string BandolierBanditItemTpl = "c8a4f1e3d9b2a5f7e8c4d1a2";
+
         // master runtime gate. defaults to false; only ever flipped to true
         // by the hideout mattress Sleep action just before it kicks off the
         // Factory practice raid. resets to false on the next hideout entry
@@ -190,6 +196,12 @@ namespace Manimal.SpeedCola
         // QuickReviveTestKey (F9 default) to toggle at runtime.
         public static bool QuickReviveForceActive = false;
         public static ConfigEntry<KeyboardShortcut> QuickReviveTestKey;
+
+        // dev hotkey to drop a Bandolier Bandit bottle into the player's
+        // equipment cascade so we can test the perk without grinding supply
+        // drops. default F8 (the slot freed up when we removed the old
+        // freeze-zombies-and-grant-TC toggle).
+        public static ConfigEntry<KeyboardShortcut> BandolierBanditTestKey;
 
         // when true, the bought SpeedCola is auto-consumed the moment it lands
         // in the inventory - the player skips having to find and use it.
@@ -373,6 +385,14 @@ namespace Manimal.SpeedCola
             new DoubleTapDamagePatch().Enable();
             new DoubleTapBuffIconPatch().Enable();
             new DoubleTapEffectIconRegistrationPatch().Enable();
+
+            // Bandolier Bandit (supply-drop exclusive perk) - mag capacity
+            // +10, 5% per-shot bullet refund, no malfunctions.
+            new BandolierBanditMagMaxCountPatch().Enable();
+            new BandolierBanditMalfunctionPatch().Enable();
+            new BandolierBanditOnShotPatch().Enable();
+            new BandolierBanditBuffIconPatch().Enable();
+            new BandolierBanditEffectIconRegistrationPatch().Enable();
             new SpawnWallbuyOnGameStartedPatch().Enable();
             new Mp43WallbuyActionPatch().Enable();
             new SpawnUmpWallbuyOnGameStartedPatch().Enable();
@@ -436,6 +456,12 @@ namespace Manimal.SpeedCola
                 new KeyboardShortcut(KeyCode.F7),
                 "Press to toggle the Death Perception visual effect on/off for testing (forces buff-active regardless of actual buff state). Default: F7.");
 
+            BandolierBanditTestKey = Config.Bind(
+                "Debug",
+                "BandolierBanditTestKey",
+                new KeyboardShortcut(KeyCode.F8),
+                "Press to drop one Bandolier Bandit bottle into your equipment cascade (rig -> pockets -> belt -> backpack) for testing. Default: F8.");
+
             QuickReviveTestKey = Config.Bind(
                 "Debug",
                 "QuickReviveTestKey",
@@ -456,6 +482,7 @@ namespace Manimal.SpeedCola
         // within 200ms of the last accepted one collapses those duplicates.
         private float _lastDpToggleTime = -10f;
         private float _lastQrToggleTime = -10f;
+        private float _lastBandolierTestTime = -10f;
         private void Update()
         {
             try
@@ -476,6 +503,14 @@ namespace Manimal.SpeedCola
                 QuickReviveEffectIconRegistrationPatch.EnsureRegistered();
                 DeadshotDaiquiriEffectIconRegistrationPatch.EnsureRegistered();
                 DoubleTapEffectIconRegistrationPatch.EnsureRegistered();
+                BandolierBanditEffectIconRegistrationPatch.EnsureRegistered();
+
+                // Bandolier Bandit: when the buff is active, detect mag-swap
+                // events (reload, weapon swap) and top the freshly-loaded
+                // in-weapon mag to the buffed +10 ceiling. cheap when the
+                // buff isn't active (single ActiveBuffsNames check, then
+                // early return).
+                BandolierBanditTopUpTick.Tick();
 
                 // tick the QR downed-state machine. cheap when not downed
                 // (single bool early-return); while downed, re-applies pose/
@@ -504,10 +539,17 @@ namespace Manimal.SpeedCola
                     LogSource?.LogInfo($"[QuickRevive] force-active toggled to {QuickReviveForceActive} (charge {(QuickReviveState.HasCharge ? "armed" : "cleared")}).");
                 }
 
-                // (F8 debug toggle removed - was a dev hotkey that paused
-                // waves, dumped TarCoins, and seeded perk bottles. shipped
-                // gameplay no longer needs it. ZombiesPaused mechanism and
-                // TryDropTestBottle helper were removed with it.)
+                // Bandolier Bandit drop (default F8): mints one bottle and
+                // seats it via the rig -> pockets -> belt -> backpack cascade.
+                // for testing the perk without waiting on a supply drop.
+                if (BandolierBanditTestKey != null && BandolierBanditTestKey.Value.IsDown()
+                    && Time.unscaledTime - _lastBandolierTestTime >= 0.2f)
+                {
+                    _lastBandolierTestTime = Time.unscaledTime;
+                    EFT.Player main = Comfort.Common.Singleton<EFT.GameWorld>.Instance?.MainPlayer;
+                    string result = TryDropBandolierBottle(main);
+                    LogSource?.LogInfo($"[BandolierBandit-Test] drop result: {result}");
+                }
             }
             catch (System.Exception ex)
             {
@@ -515,5 +557,39 @@ namespace Manimal.SpeedCola
             }
         }
 
+        // shared helper for the F8 Bandolier Bandit test hotkey: create one
+        // BandolierBanditItemTpl and seat it via the ZombiesLoadoutPatch
+        // rig -> pockets -> belt -> backpack cascade. returns a short status
+        // string for the log line - "placed", "no-room", "create-failed", etc.
+        // also fire-and-forget triggers a UsePrefab bundle preload so the
+        // drink animation works immediately even if no supply drop has
+        // warmed up the bundle yet.
+        private static string TryDropBandolierBottle(EFT.Player main)
+        {
+            if (main == null) return "(no main player)";
+            try
+            {
+                var factory = Comfort.Common.Singleton<ItemFactoryClass>.Instance;
+                var inv     = main.InventoryController;
+                if (factory == null || inv == null) return "factory-or-inv-null";
+
+                var bottle = factory.CreateItem(((IIdGenerator)inv).NextId, BandolierBanditItemTpl, null);
+                if (bottle == null) return "create-failed (server-side tpl registered?)";
+
+                bottle.SpawnedInSession = true;
+
+                // belt-and-suspenders bundle preload. ZombiesWaveController.Start()
+                // already kicks off the supply-drop UsePrefab warmup at raid
+                // start, but if the player F8's before the zombies controller
+                // attaches, this catches the race. refcounted: duplicate
+                // retains are free.
+                _ = WallbuyBundleLoader.EnsureItemBundleLoaded(bottle);
+
+                bool placed = Manimal.SpeedCola.Patches.ZombiesLoadoutPatch.TryPlaceItemAcrossEquipment(
+                    inv.Inventory.Equipment, bottle);
+                return placed ? "placed" : "no-room";
+            }
+            catch (System.Exception ex) { return $"threw:{ex.Message}"; }
+        }
     }
 }

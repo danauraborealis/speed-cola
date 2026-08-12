@@ -578,6 +578,17 @@ namespace Manimal.SpeedCola
                 Category = LootCategory.Perk,
                 BuffNameIfPerk = Patches.DoubleTapBuffState.BuffName, // "doubletap"
             },
+            new LootEntry
+            {
+                // Bandolier Bandit - +10 mag capacity, 5% per-shot bullet
+                // refund, weapons never malfunction. supply drop only.
+                // shares the Perk category cap with Deadshot / Double Tap.
+                Label  = "Bandolier Bandit",
+                Tpl    = "c8a4f1e3d9b2a5f7e8c4d1a2",
+                Weight = 15,
+                Category = LootCategory.Perk,
+                BuffNameIfPerk = Patches.BandolierBanditBuffState.BuffName, // "bandolierbandit"
+            },
         };
 
         // items seeded into every crate as a hard guarantee, outside the

@@ -53,6 +53,7 @@ namespace Manimal.SpeedCola.Patches
                 QuickReviveBuffState.BuffName,      // "quickrevive"
                 DeadshotDaiquiriBuffState.BuffName, // "deadshotdaiquiri"
                 DoubleTapBuffState.BuffName,        // "doubletap"
+                BandolierBanditBuffState.BuffName,  // "bandolierbandit"
             };
 
         // post-revive grace window. covers the gap between QuickReviveDownedState.Exit

@@ -60,7 +60,7 @@ namespace Manimal.SpeedCola
                     // magazine: top its Cartridges up to MaxCount.
                     if (item is MagazineItemClass mag)
                     {
-                        if (RefillMagazine(mag)) mags++;
+                        if (RefillMagazine(mag, factory, inv)) mags++;
                         continue;
                     }
 
@@ -104,23 +104,28 @@ namespace Manimal.SpeedCola
                 // back up to the spawn-time count.
                 ZombiesLoadoutPatch.TopUp1911SpareMags(inv, inv.Inventory.Equipment, factory);
 
-                // wallbuy-weapon top-ups: each patch's "restock on re-buy" branch
-                // is what the user invokes from the wallbuy by paying TC. Max
-                // Ammo runs the same path for every wallbuy weapon the player
-                // owns - no-op for any not present. fire-and-forget; each is an
-                // async network transaction and we don't want to serialize them.
-                Plugin.LogSource?.LogInfo("[MaxAmmo] firing wallbuy refills (MP-43, Rot, UMP, STG, BAR)...");
+                // boss-weapon top-ups run FIRST. boss-weapon mags are
+                // typically larger (1x3 drums, 1x2 long-mags) than wallbuy
+                // mags (1x1 / 1x2 standard), and the placement cascade
+                // (rig -> pockets -> belt -> backpack) only succeeds if
+                // there's an open slot of the right size. running these
+                // first claims rig + belt slots before wallbuy fills them
+                // with smaller mags. also internally sorted by W*H desc
+                // so the biggest boss mag fits before any smaller one.
+                TopUpBossWeapons(player, inv, factory);
+
+                // wallbuy-weapon top-ups: each patch's "restock on re-buy"
+                // branch is what the user invokes from the wallbuy by
+                // paying TC. Max Ammo runs the same path for every wallbuy
+                // weapon the player owns - no-op for any not present.
+                // fire-and-forget; each is an async network transaction.
+                Plugin.LogSource?.LogInfo("[MaxAmmo] firing wallbuy refills (MP-43, Rot, UMP, STG, BAR, SKS)...");
                 _ = Mp43WallbuyActionPatch.RefillForMaxAmmoPickup(player);
                 _ = RotWallbuyActionPatch.RefillForMaxAmmoPickup(player);
                 _ = UmpWallbuyActionPatch.RefillForMaxAmmoPickup(player);
                 _ = StgWallbuyActionPatch.RefillForMaxAmmoPickup(player);
                 _ = BarWallbuyActionPatch.RefillForMaxAmmoPickup(player);
-
-                // boss-weapon top-ups: any weapon dispensed via supply drop
-                // is registered in BossWeaponRegistry with its spawn-time
-                // mag tpl + ammo tpl + target spare count. iterate and top
-                // each one up. no-op for tpls the player no longer owns.
-                TopUpBossWeapons(player, inv, factory);
+                _ = SksWallbuyActionPatch.RefillForMaxAmmoPickup(player);
 
                 // schedule a delayed re-search sweep. the wallbuy refills
                 // above are async (fire-and-forget) - they dispense fresh
@@ -150,7 +155,15 @@ namespace Manimal.SpeedCola
         // listeners that drive the in-game ammo counter. without it the
         // visible count stays stale until the player reloads or opens the
         // inventory - which is exactly the "didn't seem to work" symptom.
-        private static bool RefillMagazine(MagazineItemClass mag)
+        //
+        // empty-mag fallback: when there's no last cartridge to bump (the
+        // player ran it dry), we consult BossWeaponRegistry for an ammo
+        // tpl that matches this mag's template. if found, mint a fresh
+        // stack at full capacity. without this, a fully-emptied 45-rounder
+        // (or any other boss-weapon mag) stays empty after Max Ammo.
+        // wallbuy mags don't hit this path because each wallbuy's
+        // RefillMagazineToCapacity handles empties via its known ammo tpl.
+        private static bool RefillMagazine(MagazineItemClass mag, ItemFactoryClass factory, InventoryController inv)
         {
             try
             {
@@ -161,10 +174,34 @@ namespace Manimal.SpeedCola
                 int deficit = max - cur;
 
                 Item last = mag.Cartridges.Last;
-                if (last == null) return false; // empty mag: leave it (no ammo type to choose)
-                last.StackObjectsCount += deficit;
-                last.RaiseRefreshEvent(false, true);
+                if (last != null)
+                {
+                    // partial mag: bump the existing stack.
+                    last.StackObjectsCount += deficit;
+                    last.RaiseRefreshEvent(false, true);
+                    mag.RaiseRefreshEvent(false, true);
+                    return true;
+                }
+
+                // fully-empty mag: try to mint a fresh stack using a known
+                // ammo tpl from the boss-weapon registry. if no registry
+                // entry matches this mag's tpl, we leave it empty (no way
+                // to know what caliber to seed).
+                if (factory == null || inv == null) return false;
+                string ammoTpl = LookupAmmoTplForMagFromRegistry(mag.TemplateId);
+                if (string.IsNullOrEmpty(ammoTpl)) return false;
+
+                Item ammo = factory.CreateItem(((IIdGenerator)inv).NextId, ammoTpl, null);
+                if (ammo == null) return false;
+                ammo.StackObjectsCount = max;
+                var addResult = mag.Cartridges.Add(ammo, simulate: false);
+                if (addResult.Failed)
+                {
+                    Plugin.LogSource?.LogWarning($"[MaxAmmo] empty-mag refill: Cartridges.Add failed for {mag.TemplateId}: {addResult.Error}");
+                    return false;
+                }
                 mag.RaiseRefreshEvent(false, true);
+                Plugin.LogSource?.LogInfo($"[MaxAmmo] empty-mag refill: {mag.TemplateId} <- {max}x {ammoTpl} (from boss registry).");
                 return true;
             }
             catch (Exception ex)
@@ -172,6 +209,20 @@ namespace Manimal.SpeedCola
                 Plugin.LogSource?.LogWarning($"[MaxAmmo] RefillMagazine threw: {ex.Message}");
                 return false;
             }
+        }
+
+        // walk BossWeaponRegistry for an entry whose MagTpl matches the
+        // given mag tpl. returns the registered AmmoTpl, or null if no
+        // match. linear scan but the registry is small (1 entry per
+        // distinct boss weapon spawned this raid).
+        private static string LookupAmmoTplForMagFromRegistry(string magTpl)
+        {
+            if (string.IsNullOrEmpty(magTpl)) return null;
+            foreach (var kv in BossWeaponRegistry.All)
+            {
+                if (kv.Value.MagTpl == magTpl) return kv.Value.AmmoTpl;
+            }
+            return null;
         }
 
         // AmmoBox is a partial-stack ammo container (e.g. cardboard 30rd boxes).
@@ -351,7 +402,19 @@ namespace Manimal.SpeedCola
                 Plugin.LogSource?.LogInfo($"[MaxAmmo] BossWeaponRegistry has {registrySize} entries.");
                 if (registrySize == 0) return;
 
-                foreach (KeyValuePair<string, BossWeaponRegistry.Entry> kv in BossWeaponRegistry.All)
+                // sort by mag footprint (Width * Height) descending so the
+                // BIGGEST mags get dispensed first - they need the largest
+                // free grid cells, and the placement cascade only succeeds
+                // when a matching cell exists. iterating in dictionary
+                // order would let smaller mags claim large cells first.
+                List<KeyValuePair<string, BossWeaponRegistry.Entry>> ordered =
+                    new List<KeyValuePair<string, BossWeaponRegistry.Entry>>();
+                foreach (var kv in BossWeaponRegistry.All) ordered.Add(kv);
+                ordered.Sort((a, b) =>
+                    GetMagFootprintArea(factory, b.Value.MagTpl).CompareTo(
+                        GetMagFootprintArea(factory, a.Value.MagTpl)));
+
+                foreach (KeyValuePair<string, BossWeaponRegistry.Entry> kv in ordered)
                 {
                     string weaponTpl = kv.Key;
                     BossWeaponRegistry.Entry e = kv.Value;
@@ -408,6 +471,25 @@ namespace Manimal.SpeedCola
                 inv.Inventory.Equipment, magTpl, ammoTpl, count, inv, factory);
             foreach (Item m in placed) m.SpawnedInSession = true;
             Plugin.LogSource?.LogInfo($"[MaxAmmo] boss weapon: dispensed {placed.Count}/{count} loaded mag(s).");
+        }
+
+        // looks up the mag's ItemTemplate and returns its grid footprint
+        // (Width * Height). used as the sort key for largest-first
+        // dispensing. returns 0 on any miss (unknown tpl / null factory) so
+        // unresolvable entries sink to the end of the sort.
+        private static int GetMagFootprintArea(ItemFactoryClass factory, string magTpl)
+        {
+            try
+            {
+                if (factory == null || string.IsNullOrEmpty(magTpl)) return 0;
+                if (!factory.ItemTemplates.TryGetValue(magTpl, out ItemTemplate t) || t == null) return 0;
+                int w = t.Width;
+                int h = t.Height;
+                if (w <= 0) w = 1;
+                if (h <= 0) h = 1;
+                return w * h;
+            }
+            catch { return 0; }
         }
     }
 }

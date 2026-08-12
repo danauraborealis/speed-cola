@@ -24,9 +24,9 @@ namespace Manimal.SpeedCola
     public static class ZombieSpeedAssigner
     {
         // tuning knobs - edit literals to retune the distribution shape.
-        public const float WaveBaseStart      = 0.7f;
+        public const float WaveBaseStart      = 0.8f;
         public const float WaveBaseRamp       = 0.093f;  // 0.7@w1 → 2.0 cap @w15
-        public const float WaveBaseCap        = 2.5f;
+        public const float WaveBaseCap        = 2.6f;
         public const int   FullRampWaves      = 13;      // wave at which variance band has fully shifted (aligned with cap-hit @w15)
         public static readonly float StartLow  = 0.7f;
         public static readonly float StartHigh = 1.0f;
